@@ -11,14 +11,18 @@ public class Main {
         myTask_Thread.setDaemon(false); // This will wait
         // myTask_Thread.setDaemon(true); // This will not wait
 
-        myTask_Thread.start();
-        myOtherTask.start();
+//        myTask_Thread.start();
+//        myOtherTask.start();
 
         Thread messagePrinterThread = new Thread(new MessagePrinter(
                 "My Message", 10
         ));
 
-        messagePrinterThread.start();
+//        messagePrinterThread.start();
+
+        CountUp countUp = new CountUp(10, 1);
+        countUp.start();
+
 
     }
 
