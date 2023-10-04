@@ -13,9 +13,9 @@ public class MessagePrinter implements Runnable {
     public void run() {
         int k = 0;
         while (k < n) {
-            System.out.println(message);
+            System.out.println(message + ": " + k);
             try {
-                Thread.sleep(100);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 System.out.println(e.getMessage());
             }
