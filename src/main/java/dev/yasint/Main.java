@@ -1,89 +1,63 @@
 package dev.yasint;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.Random;
+import java.util.function.Consumer;
 
 public class Main {
 
     public static void main(String[] args) {
-
-        joinExample();
-
-//        MyTask myTask = new MyTask();
-//        MyOtherTask myOtherTask = new MyOtherTask();
-//
-//        Thread myTask_Thread = new Thread(myTask);
-//        myTask_Thread.setDaemon(false); // This will wait
-//        // myTask_Thread.setDaemon(true); // This will not wait
-//
-////        myTask_Thread.start();
-////        myOtherTask.start();
-//
-//        Thread messagePrinterThread = new Thread(new MessagePrinter(
-//                "My Message", 10
-//        ));
-//
-////        messagePrinterThread.start();
-//
-//        CountUp countUp = new CountUp(10, 1);
-//        countUp.start();
-
+        coinTossRunExample();
     }
 
-    public static void joinExample() {
+    private static void coinTossRunExample() {
+        Consumer<Integer> func = times -> {
 
-        Thread thread1 = new Thread(new MessagePrinter(
-                "My Message from Thread-1", 10
-        ));
-        thread1.setName("Thread-1");
+            Random random = new Random();
+
+            for (int i = 0; i < times; i++) {
+                synchronized (CoinToss.class) {
+                    if (random.nextInt(2) == 0) {
+                        CoinToss.headsCount++;
+                    } else {
+                        CoinToss.tailsCount++;
+                    }
+                }
+            }
+
+        };
 
 
-        Thread thread2 = new Thread(new MessagePrinter(
-                "My Message from Thread-2", 10
-        ));
-        thread2.setName("Thread-2");
+        Thread thread1 = new Thread(() -> {
+            int times = 500;
+            func.accept(times);
+        });
 
-        ThreadStateChecker state = new ThreadStateChecker(
-                Arrays.asList(thread1, thread2)
-        );
+        Thread thread2 = new Thread(() -> {
+            int times = 500;
+            func.accept(times);
 
-        state.start();
-
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        });
 
         thread1.start();
         thread2.start();
 
 
-    }
-
-    private static class ThreadStateChecker extends Thread {
-
-        private final List<Thread> threadList;
-
-        public ThreadStateChecker(List<Thread> threadList) {
-            this.threadList = threadList;
-            setDaemon(true);
+        try {
+            thread1.join();
+            thread2.join();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            System.out.println(e.getMessage());
         }
 
-        @Override
-        public void run() {
-            while (true) {
-                for (Thread t : threadList) {
-                    System.out.println(t.getName() + " | "
-                            + t.getState()
-                            + " | isAlive? " + t.isAlive());
-                }
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+        System.out.println("Results after 1000 coin tosses.");
+        System.out.println("Heads: " + CoinToss.headsCount);
+        System.out.println("Tails: " + CoinToss.tailsCount);
+
+        if (Math.abs(CoinToss.headsCount - CoinToss.tailsCount) <= CoinToss.FREQ) {
+            System.out.println("Coin is fair");
+        } else {
+            System.out.println("Coin is biased");
         }
     }
 
