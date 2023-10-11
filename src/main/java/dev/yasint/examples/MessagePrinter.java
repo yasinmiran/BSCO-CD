@@ -1,4 +1,4 @@
-package dev.yasint;
+package dev.yasint.examples;
 
 public class MessagePrinter implements Runnable {
 

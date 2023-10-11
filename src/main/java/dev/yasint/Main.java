@@ -1,12 +1,34 @@
 package dev.yasint;
 
+import dev.yasint.labs.CoinToss;
+import dev.yasint.labs.ContPrinter;
+
 import java.util.Random;
 import java.util.function.Consumer;
 
 public class Main {
 
     public static void main(String[] args) {
-        coinTossRunExample();
+        contPrinterExample();
+    }
+
+    private static void contPrinterExample() {
+
+        ContPrinter printer = new ContPrinter("My Message");
+
+        Thread controlThread = new Thread(() -> {
+            try {
+                Thread.sleep(5000);
+                System.out.println("5 seconds are completed");
+                printer.setRun(false);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        printer.start();
+        controlThread.start();
+
     }
 
     private static void coinTossRunExample() {
@@ -60,6 +82,5 @@ public class Main {
             System.out.println("Coin is biased");
         }
     }
-
 
 }
