@@ -2,6 +2,9 @@ package dev.yasint;
 
 import dev.yasint.labs.CoinToss;
 import dev.yasint.labs.ContPrinter;
+import dev.yasint.labs.countermonitor.Count;
+import dev.yasint.labs.countermonitor.CounterIncrementor;
+import dev.yasint.labs.countermonitor.CounterMonitor;
 
 import java.util.Random;
 import java.util.function.Consumer;
@@ -9,7 +12,51 @@ import java.util.function.Consumer;
 public class Main {
 
     public static void main(String[] args) {
-        contPrinterExample();
+        counterMonitorExample();
+    }
+
+    private static void counterMonitorExample() {
+
+        Count count = new Count();
+
+        CounterIncrementor incrementor1 = new CounterIncrementor(count);
+        CounterIncrementor incrementor2 = new CounterIncrementor(count);
+        CounterIncrementor incrementor3 = new CounterIncrementor(count);
+        CounterMonitor monitor = new CounterMonitor(count);
+
+        Thread incThread1 = new Thread(incrementor1);
+        Thread incThread2 = new Thread(incrementor2);
+        Thread incThread3 = new Thread(incrementor3);
+        Thread monitorThread = new Thread(monitor);
+
+        incThread1.start();
+        incThread2.start();
+        incThread3.start();
+        monitorThread.start();
+
+        try {
+            Thread.sleep(30000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            System.out.println("Main thread was interrupted by someone");
+        }
+
+        monitor.setStopRunning(true);
+        incrementor1.setStopRunning(true);
+        incrementor2.setStopRunning(true);
+        incrementor3.setStopRunning(true);
+
+        try {
+            incThread1.join();
+            incThread2.join();
+            incThread3.join();
+            monitorThread.join();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            System.out.println("Main thread was interrupted during joining");
+
+        }
+
     }
 
     private static void contPrinterExample() {
