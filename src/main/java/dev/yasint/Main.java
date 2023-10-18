@@ -5,19 +5,33 @@ import dev.yasint.labs.ContPrinter;
 import dev.yasint.labs.countermonitor.Count;
 import dev.yasint.labs.countermonitor.CounterIncrementor;
 import dev.yasint.labs.countermonitor.CounterMonitor;
+import dev.yasint.labs.forkjoin.ArraySum;
 import dev.yasint.labs.threadpools.Worker;
 
 import java.util.Random;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.function.Consumer;
 
 public class Main {
 
     public static void main(String[] args) {
-        scheduledThreadPools();
+        forkJoinLongNumberArray();
+    }
+
+    public static void forkJoinLongNumberArray() {
+
+        long[] numbers = new long[1000];
+        for (int i = 0; i < numbers.length; i++) {
+            numbers[i] = (long) i + 1;
+        }
+
+        ForkJoinPool forkJoinPool = new ForkJoinPool();
+        ArraySum sum = new ArraySum(numbers, 0, numbers.length);
+        long result = forkJoinPool.invoke(sum);
+
+        System.out.println("sum: " + result);
+
+
     }
 
     public static void scheduledThreadPools() {
