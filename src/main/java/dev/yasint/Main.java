@@ -5,14 +5,71 @@ import dev.yasint.labs.ContPrinter;
 import dev.yasint.labs.countermonitor.Count;
 import dev.yasint.labs.countermonitor.CounterIncrementor;
 import dev.yasint.labs.countermonitor.CounterMonitor;
+import dev.yasint.labs.threadpools.Worker;
 
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 public class Main {
 
     public static void main(String[] args) {
-        counterMonitorExample();
+        scheduledThreadPools();
+    }
+
+    public static void scheduledThreadPools() {
+
+        ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(5);
+        long[] sleepTimes = new long[]{0, 2000, 0, 10000, 0};
+
+        for (int i = 1; i <= 5; i++) {
+            Worker worker = new Worker(i, sleepTimes[i - 1]);
+            scheduledThreadPool.schedule(worker, 5, TimeUnit.SECONDS);
+        }
+
+        scheduledThreadPool.shutdown();
+
+        while (!scheduledThreadPool.isTerminated()) ;
+
+        System.out.println("Finished all threads.");
+
+    }
+
+    public static void cachedThreadPools() {
+
+        ExecutorService executor = Executors.newCachedThreadPool();
+
+        for (int i = 0; i < 1000; i++) {
+            Worker worker = new Worker(i);
+            executor.submit(worker);
+        }
+
+        executor.shutdown();
+
+        while (!executor.isTerminated()) ;
+
+        System.out.println("Finished all threads.");
+
+    }
+
+    public static void fixedThreadPools() {
+
+        ExecutorService executor = Executors.newFixedThreadPool(100);
+
+        for (int i = 0; i < 1000; i++) {
+            Worker worker = new Worker(i);
+            executor.submit(worker);
+        }
+
+        executor.shutdown();
+
+        while (!executor.isTerminated()) ;
+
+        System.out.println("Finished all threads.");
+
     }
 
     private static void counterMonitorExample() {
