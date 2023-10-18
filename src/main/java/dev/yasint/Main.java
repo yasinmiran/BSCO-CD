@@ -20,7 +20,7 @@ public class Main {
 
     public static void forkJoinLongNumberArray() {
 
-        long[] numbers = new long[1000];
+        long[] numbers = new long[10];
         for (int i = 0; i < numbers.length; i++) {
             numbers[i] = (long) i + 1;
         }
