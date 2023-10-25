@@ -3,6 +3,11 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+# Don't include assessment solution code.
+src/main/java/dev/yasint/assessments
+src/test/java/dev/yasint/AssessmentTest.java
+
+
 ### IntelliJ IDEA ###
 .idea/modules.xml
 .idea/jarRepositories.xml

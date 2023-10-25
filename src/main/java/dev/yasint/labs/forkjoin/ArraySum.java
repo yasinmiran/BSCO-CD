@@ -52,14 +52,11 @@ public class ArraySum extends RecursiveTask<Long> {
                     Arrays.toString(getSliceOfArray(numbers, start, mid)),
                     Arrays.toString(getSliceOfArray(numbers, mid, end))
             );
-//            System.out.printf(
-//                    "greater than the threshold.\ndividing numbers: first: {s:%d,e:%d}\nsecond:{s:%d,e:%d}\n",
-//                    start, mid, mid, end);
 
-            first.fork();
+            second.fork();
 
-            long secondResult = second.compute();
-            long firstResult = first.join();
+            long secondResult = first.compute();
+            long firstResult = second.join();
 
             sum = firstResult + secondResult;
 

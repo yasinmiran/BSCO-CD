@@ -4,6 +4,7 @@ import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveAction;
 
 public class TaskProcessor extends RecursiveAction {
+
     private static final int THRESHOLD = 2; // This can vary
     private final Computable[] tasks;
     private final int start;
