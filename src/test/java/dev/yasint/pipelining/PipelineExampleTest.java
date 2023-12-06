@@ -37,11 +37,13 @@ public class PipelineExampleTest {
     @Test
     public void test() throws InterruptedException {
 
+        BlockingQueue<Integer> inputSource = new LinkedBlockingQueue<>();
+
         BlockingQueue<Integer> stage1Queue = new LinkedBlockingQueue<>();
         BlockingQueue<Integer> stage2Queue = new LinkedBlockingQueue<>();
         BlockingQueue<Integer> stage3Queue = new LinkedBlockingQueue<>();
 
-        Thread stage1 = new Thread(new PipelineStage(new LinkedBlockingQueue<>(), stage1Queue, 1));
+        Thread stage1 = new Thread(new PipelineStage(inputSource, stage1Queue, 1));
         Thread stage2 = new Thread(new PipelineStage(stage1Queue, stage2Queue, 2));
         Thread stage3 = new Thread(new PipelineStage(stage2Queue, stage3Queue, 3));
 
